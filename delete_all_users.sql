@@ -1,0 +1,33 @@
+BEGIN
+  FOR usr IN (
+    SELECT username FROM dba_users
+    WHERE username NOT IN (
+      'SYS', 'SYSTEM', 'OUTLN', 'XS$NULL', 'DBSNMP', 'SYSDG',
+      'SYSBACKUP', 'SYSKM', 'AUDSYS', 'APPQOSSYS', 'GGSYS',
+      'REMOTE_SCHEDULER_AGENT', 'OJVMSYS', 'DVF', 'DVSYS',
+      'ORACLE_OCM', 'ANONYMOUS', 'XDB', 'CTXSYS', 'ORDS_METADATA',
+      'ORDDATA', 'ORDPLUGINS', 'ORDSYS', 'MDSYS', 'LBACSYS',
+      'WMSYS', 'OLAPSYS', 'SI_INFORMTN_SCHEMA', 'APEX_PUBLIC_USER',
+      'APEX_210100', 'PUBLIC', 'AUDIT_VIEWER', 'AUDIT_ADMIN'
+    )
+  ) LOOP
+    BEGIN
+      EXECUTE IMMEDIATE 'DROP USER "' || usr.username || '" CASCADE';
+      DBMS_OUTPUT.PUT_LINE('Silindi: ' || usr.username);
+    EXCEPTION
+      WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('HATA: ' || usr.username || ' → ' || SQLERRM);
+    END;
+  END LOOP;
+END;
+/
+
+SELECT username FROM dba_users
+WHERE username NOT IN (
+  'SYS', 'SYSTEM', 'OUTLN', 'XS$NULL', 'DBSNMP', 'SYSDG',
+  'SYSBACKUP', 'SYSKM', 'AUDSYS', 'APPQOSSYS', 'GGSYS',
+  'REMOTE_SCHEDULER_AGENT', 'OJVMSYS', 'DVF', 'DVSYS',
+  'ORACLE_OCM', 'XS$NULL'
+);
+
+GRANT CREATE TRIGGER TO dbfinal;
